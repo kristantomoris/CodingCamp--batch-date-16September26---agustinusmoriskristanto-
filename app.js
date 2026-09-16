@@ -214,27 +214,22 @@ function renderChart() {
   const data    = Object.values(byCategory);
   const colors  = labels.map(l => CATEGORY_COLORS[l] || '#94a3b8');
 
+  // Always destroy the previous instance before recreating.
+  // Chart.js 4 does not reliably re-render when mutating data in-place,
+  // so destroy + recreate is the safest approach.
+  if (pieChart) {
+    pieChart.destroy();
+    pieChart = null;
+  }
+
   if (labels.length === 0) {
     chartCanvas.style.display = 'none';
     chartEmpty.style.display  = '';
-    if (pieChart) {
-      pieChart.destroy();
-      pieChart = null;
-    }
     return;
   }
 
   chartEmpty.style.display  = 'none';
   chartCanvas.style.display = '';
-
-  if (pieChart) {
-    // Update existing chart data in-place (smoother)
-    pieChart.data.labels            = labels;
-    pieChart.data.datasets[0].data  = data;
-    pieChart.data.datasets[0].backgroundColor = colors;
-    pieChart.update();
-    return;
-  }
 
   pieChart = new Chart(chartCanvas, {
     type: 'pie',
@@ -250,13 +245,14 @@ function renderChart() {
     },
     options: {
       responsive: true,
+      animation: { duration: 400 },
       plugins: {
         legend: {
           position: 'bottom',
           labels: {
-            font:        { size: 13, family: "'Segoe UI', system-ui, sans-serif" },
-            padding:     16,
-            usePointStyle: true,
+            font:            { size: 13, family: "'Segoe UI', system-ui, sans-serif" },
+            padding:         16,
+            usePointStyle:   true,
             pointStyleWidth: 10,
           },
         },
