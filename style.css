@@ -45,14 +45,55 @@ body {
 }
 
 .main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Row 1: form spans full width */
+.form-panel {
+  width: 100%;
+}
+
+/* Inline form fields on one row */
+.form-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: 16px;
+  align-items: start;
+}
+
+.form-group--btn {
+  /* push button down to align with inputs */
+  padding-top: 22px;
+}
+
+/* Row 2: Transactions + Chart side-by-side */
+.bottom-panel {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 24px;
   align-items: start;
 }
 
-@media (max-width: 768px) {
-  .main {
+@media (max-width: 900px) {
+  .form-row {
+    grid-template-columns: 1fr 1fr;
+  }
+  .form-group--btn {
+    padding-top: 0;
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  .form-group--btn {
+    grid-column: span 1;
+  }
+  .bottom-panel {
     grid-template-columns: 1fr;
   }
 }
@@ -110,9 +151,7 @@ body {
   border: 1px solid var(--border);
 }
 
-.card + .card {
-  margin-top: 24px;
-}
+/* gap is handled by .bottom-panel grid, not sibling margin */
 
 .card h2 {
   font-size: 1rem;
